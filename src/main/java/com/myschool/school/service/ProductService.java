@@ -64,4 +64,13 @@ public class ProductService {
         productRepository.save(product1);
 
     }
+
+    public Product findById(Long productId) {
+        Optional<Product> product = productRepository.findById(productId);
+        if (product.isEmpty()){
+            throw new RuntimeException("product is empty");
+        }
+        return product.get();
+    }
 }
+
