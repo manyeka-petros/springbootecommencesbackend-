@@ -23,7 +23,7 @@ public class CategoryController {
     public ResponseEntity<ApiResponse> craeteCategor(@RequestBody Category category){
 
           categorySevice.createCategory(category);
-          return new ResponseEntity<ApiResponse>( new ApiResponse(true, "saved to database"), HttpStatus.OK);
+          return new ResponseEntity<>(new ApiResponse(true, "saved to database"), HttpStatus.OK);
     }
     @GetMapping()
     public List<Category> getAllCategory(){
