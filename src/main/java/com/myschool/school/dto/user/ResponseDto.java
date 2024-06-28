@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter@AllArgsConstructor
 @NoArgsConstructor
 public class ResponseDto {
-
-    private String success;
     private String message;
+    private boolean success;
 }

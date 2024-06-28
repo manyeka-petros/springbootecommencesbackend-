@@ -29,7 +29,7 @@ public class WishListService {
 
     public List<ProductDto> getWishList(Users users) {
 
-      final List<WishList> wishLists =   wishListRepository.findAllByUsersByCreateDate(users);
+      final List<WishList> wishLists =   wishListRepository.findAllByUsersOrderByCreateDateDesc(users);
       List<ProductDto> productDtos = new ArrayList<>();
       for (WishList wishList:wishLists){
           productDtos.add(productService.getProductDto(wishList.getProduct()));

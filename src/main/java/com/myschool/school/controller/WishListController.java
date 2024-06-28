@@ -16,6 +16,8 @@ import java.util.List;
 
 @RestController
 
+@CrossOrigin(origins = "http://localhost:3000")
+
 public class WishListController {
 
     @Autowired
@@ -23,7 +25,7 @@ public class WishListController {
 
     @Autowired
     AuthenticationTokenService authenticationTokenService;
-@PostMapping("/addToWishList")
+@PostMapping("/addToWishList/{token}")
     public ResponseEntity<ApiResponse> addToWishList(@RequestBody Product product, @RequestParam("token") String token){
         authenticationTokenService.authenticateToken(token);
 
@@ -37,12 +39,11 @@ public class WishListController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
-    @GetMapping("/token")
-
-    public ResponseEntity<List<ProductDto>>  getWishList(@PathVariable("token") String token){
-    authenticationTokenService.authenticateToken(token);
-    Users users = authenticationTokenService.getUsers(token);
-    return (ResponseEntity<List<ProductDto>>) wishListService.getWishList(users);
-
+    @GetMapping("/{token}")
+    public ResponseEntity<List<ProductDto>> getWishList(@PathVariable("token") String token) {
+        authenticationTokenService.authenticateToken(token);
+        Users users = authenticationTokenService.getUsers(token);
+        List<ProductDto> wishList = wishListService.getWishList(users);
+        return new ResponseEntity<>(wishList, HttpStatus.OK);
     }
 }

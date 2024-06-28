@@ -3,7 +3,6 @@ package com.myschool.school.controller;
 import com.myschool.school.common.ApiResponse;
 import com.myschool.school.dto.ProductDto;
 import com.myschool.school.model.Category;
-import com.myschool.school.model.Product;
 import com.myschool.school.repository.CategoryRepository;
 import com.myschool.school.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,40 +14,48 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProductController {
 
     @Autowired
-    ProductService productService;
+    private ProductService productService;
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @PostMapping("/saveProduct")
-
-    public ResponseEntity<ApiResponse> saveProduct(@RequestBody ProductDto productDto){
+    public ResponseEntity<ApiResponse> saveProduct(@RequestBody ProductDto productDto) {
         Optional<Category> categoryOptional = categoryRepository.findById(productDto.getCategoryId());
-        if(!categoryOptional.isPresent()){
-            return new ResponseEntity<>(new ApiResponse(false,"category is not found "),HttpStatus.NOT_FOUND);
+        if (!categoryOptional.isPresent()) {
+            return new ResponseEntity<>(new ApiResponse(false, "category is not found"), HttpStatus.BAD_REQUEST);
         }
-        productService.createProduct(productDto,categoryOptional.get());
-        return new ResponseEntity<>(new ApiResponse( true,"save to database"), HttpStatus.CREATED);
+        productService.createProduct(productDto, categoryOptional.get());
+        return new ResponseEntity<>(new ApiResponse(true, "save to database"), HttpStatus.CREATED);
     }
 
     @GetMapping("/getProduct")
-
-    public ResponseEntity<List<ProductDto>> getAllProduct(){
+    public ResponseEntity<List<ProductDto>> getAllProduct() {
         List<ProductDto> product = productService.getAllProduct();
-        return  new ResponseEntity<>(product,HttpStatus.OK);
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @PutMapping("/saveProduct/{productId}")
+    @GetMapping("/getProduct/{id}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable("id") Long id) {
+        try {
+            ProductDto productDto = productService.getProductById(id);
+            return new ResponseEntity<>(productDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
 
+    @PutMapping("/editProduct/{productId}")
     public ResponseEntity<ApiResponse> updateProduct(@PathVariable("productId") Long productId, @RequestBody ProductDto productDto) throws Exception {
         Optional<Category> categoryOptional = categoryRepository.findById(productDto.getCategoryId());
-        if(!categoryOptional.isPresent()){
-            return new ResponseEntity<>(new ApiResponse(false,"category is not found "),HttpStatus.NOT_FOUND);
+        if (!categoryOptional.isPresent()) {
+            return new ResponseEntity<>(new ApiResponse(false, "category is not found"), HttpStatus.NOT_FOUND);
         }
-        productService.updateProduct(productDto,productId);
-        return new ResponseEntity<>(new ApiResponse( true,"save to database"), HttpStatus.CREATED);
+        productService.updateProduct(productDto, productId);
+        return new ResponseEntity<>(new ApiResponse(true, "save to database"), HttpStatus.CREATED);
     }
 }

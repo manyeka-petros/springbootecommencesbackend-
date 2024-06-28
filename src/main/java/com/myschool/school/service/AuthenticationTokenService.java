@@ -13,29 +13,34 @@ import java.util.Objects;
 public class AuthenticationTokenService {
 
     @Autowired
-    AuthenticationTokenRepository authenticationTokenRepository;
+    private AuthenticationTokenRepository authenticationTokenRepository;
+
+    // Save a new authentication token
     public void confirmToken(AuthenticationToken authenticationToken) {
         authenticationTokenRepository.save(authenticationToken);
     }
 
+    // Find an authentication token by user
     public AuthenticationToken findToken(Users users) {
         return authenticationTokenRepository.findTokenByUsers(users);
     }
-    public  Users getUsers(String token){
-        final  AuthenticationToken authenticationToken = authenticationTokenRepository.findByToken(token);
-        if (Objects.isNull(token)){
+
+    // Get user associated with a token
+    public Users getUsers(String token){
+        final AuthenticationToken authenticationToken = authenticationTokenRepository.findByToken(token);
+        if (Objects.isNull(authenticationToken)){
             return null;
         }
-
         return authenticationToken.getUsers();
     }
 
-    public void authenticateToken(String token ){
+    // Authenticate a token
+    public void authenticateToken(String token) {
         if (Objects.isNull(token)) {
-            throw  new AuthenticationFailException("token is not found ");
+            throw new AuthenticationFailException("Token not found");
         }
-        if(Objects.isNull(getUsers(token))){
-            throw new AuthenticationFailException("token is not valid");
+        if (Objects.isNull(getUsers(token))) {
+            throw new AuthenticationFailException("Invalid token");
         }
     }
 }

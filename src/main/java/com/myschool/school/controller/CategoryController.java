@@ -13,19 +13,21 @@ import java.util.List;
 
 @RestController
 
+@CrossOrigin(origins = "http://localhost:3000")
+
 public class CategoryController {
 
     @Autowired
     private CategorySevice categorySevice;
 
-    @PostMapping("/creates")
+    @PostMapping("/createCategory")
 
     public ResponseEntity<ApiResponse> craeteCategor(@RequestBody Category category){
 
           categorySevice.createCategory(category);
           return new ResponseEntity<>(new ApiResponse(true, "saved to database"), HttpStatus.OK);
     }
-    @GetMapping()
+    @GetMapping("/getCategory")
     public List<Category> getAllCategory(){
         return categorySevice.getAllCategory();
     }

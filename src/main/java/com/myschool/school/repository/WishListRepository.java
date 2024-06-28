@@ -5,10 +5,14 @@ import com.myschool.school.model.WishList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface WishListRepository  extends JpaRepository<WishList,Long> {
 
-    List<WishList> findAllByUsersByCreateDate(Users users);
+
+
+
+    List<WishList> findAllByUsersOrderByCreateDateDesc(Users users);
 }
